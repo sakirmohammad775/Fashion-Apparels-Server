@@ -27,9 +27,23 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    //collection create
+    const brandCollection=client.db('FashionDB').collection('brand_collection')
+
+    //get data and show in local host 5000 server
+    app.get('/fashion',async(req,res)=>{
+      const data=brandCollection.find()
+      const result =await data.toArray()
+      res.send(result)
+    })
+
+
+    //send data and add data to the server side by using post method
     app.post('/fashion',async(req,res)=>{
       const newBrand=req.body
       console.log(newBrand);
+      const result=await brandCollection.insertOne(newBrand)
+      res.send(result)
     })
 
 
