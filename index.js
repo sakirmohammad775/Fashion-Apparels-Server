@@ -30,7 +30,7 @@ async function run() {
     //collection create
     const brandCollection=client.db('FashionDB').collection('brand_collection')
 
-    //get data and show in local host 5000 server
+    //get data and show in local host 5000 server and load
     app.get('/fashion',async(req,res)=>{
       const data=brandCollection.find()
       const result =await data.toArray()
