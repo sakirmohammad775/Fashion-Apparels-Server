@@ -30,6 +30,14 @@ async function run() {
     //fashion collection create
     const brandCollection=client.db('FashionDB').collection('brand_collection')
     
+    
+//send data and add data to the server side by using post method
+    app.post('/fashion',async(req,res)=>{
+      const newBrand=req.body
+      console.log(newBrand);
+      const result=await brandCollection.insertOne(newBrand)
+      res.send(result)
+    })
     //get data and show in local host 5000 server and load
     app.get('/fashion',async(req,res)=>{
       const data=brandCollection.find()
@@ -37,14 +45,6 @@ async function run() {
       res.send(result)
     })
 
-    
-    //send data and add data to the server side by using post method
-    app.post('/fashion',async(req,res)=>{
-      const newBrand=req.body
-      console.log(newBrand);
-      const result=await brandCollection.insertOne(newBrand)
-      res.send(result)
-    })
     //my cart collection
     const cartCollection =client.db('FashionDB').collection('cart_collection')
 
@@ -54,6 +54,11 @@ async function run() {
       console.log(newItem);
       const result =await cartCollection.insertOne(newItem)
       res.send(result);
+    })
+    app.get('/cart',async(req,res)=>{
+      const data=cartCollection.find()
+      const result=await data.toArray()
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
