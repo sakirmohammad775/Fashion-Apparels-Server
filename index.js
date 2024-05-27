@@ -1,8 +1,8 @@
-const express=require('express')
-const cors= require('cors')
-const app =express()
-const port=process.env.port || 5000
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const express = require('express')
+const cors = require('cors')
+const app = express()
+const port = process.env.port || 5000
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 
 //middleware
@@ -28,36 +28,43 @@ async function run() {
     await client.connect();
 
     //fashion collection create
-    const brandCollection=client.db('FashionDB').collection('brand_collection')
-    
-    
-//send data and add data to the server side by using post method
-    app.post('/fashion',async(req,res)=>{
-      const newBrand=req.body
+    const brandCollection = client.db('FashionDB').collection('brand_collection')
+
+
+    //send data and add data to the server side by using post method
+    app.post('/fashion', async (req, res) => {
+      const newBrand = req.body
       console.log(newBrand);
-      const result=await brandCollection.insertOne(newBrand)
+      const result = await brandCollection.insertOne(newBrand)
       res.send(result)
     })
     //get data and show in local host 5000 server and load
-    app.get('/fashion',async(req,res)=>{
-      const data=brandCollection.find()
-      const result =await data.toArray()
+    app.get('/fashion', async (req, res) => {
+      const data = brandCollection.find()
+      const result = await data.toArray()
       res.send(result)
     })
 
     //my cart collection
-    const cartCollection =client.db('FashionDB').collection('cart_collection')
+    const cartCollection = client.db('FashionDB').collection('cart_collection')
 
     //send my cart data to the server
-    app.post('/cart',async(req,res)=>{
-      const newItem=req.body
+    app.post('/cart', async (req, res) => {
+      const newItem = req.body
       console.log(newItem);
-      const result =await cartCollection.insertOne(newItem)
+      const result = await cartCollection.insertOne(newItem)
       res.send(result);
     })
-    app.get('/cart',async(req,res)=>{
-      const data=cartCollection.find()
-      const result=await data.toArray()
+    app.get('/cart', async (req, res) => {
+      const data = cartCollection.find()
+      const result = await data.toArray()
+      res.send(result)
+    })
+
+    app.delete('/cart/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await cartCollection.deleteOne(query)
       res.send(result)
     })
 
