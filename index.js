@@ -60,13 +60,28 @@ async function run() {
       const result = await data.toArray()
       res.send(result)
     })
-
+    //delete cart
+    // DELETE route to remove an item from the cart
     app.delete('/cart/:id', async (req, res) => {
-      const id = req.params.id
-      const query = { _id: new ObjectId(id) }
-      const result = await cartCollection.deleteOne(query)
-      res.send(result)
-    })
+        const id = req.params.id;
+        try {
+            const result = await cartCollection.deleteOne({ _id: ObjectId(id) });
+            if (result.deletedCount === 1) {
+                res.status(200).json({ message: 'Item deleted successfully' });
+            } else {
+                res.status(404).json({ message: 'Item not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'An error occurred', error });
+        }
+    });
+
+    // app.delete('/cart/:id', async (req, res) => {
+    //   const id = req.params.id
+    //   const query = { _id: new ObjectId(id) }
+    //   const result = await cartCollection.deleteOne(query)
+    //   res.send(result)
+    // })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
